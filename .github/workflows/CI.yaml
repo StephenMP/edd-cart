@@ -1,0 +1,272 @@
+name: CI
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+    branches:
+      - '*'
+    paths-ignore:
+      - '**/*.md'
+
+jobs:
+  ##################
+  # Step 1 : Build #
+  ##################
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-12]
+    steps:
+      # Checkout source files
+      - name: Checkout Source Files
+        uses: actions/checkout@v2
+
+      # Setup environment
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+
+      # Setup build artifact cache
+      - name: Read Build Cache
+        id: read-build-cache
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          path: |
+            **/dist
+            **/.env
+            **/generated
+
+      # Install dependencies and build
+      - name: Install Dependencies
+        run: |
+          yarn install --frozen-lockfile
+          yarn prisma:generate
+
+      # If build cache miss, do a fresh build
+      # (if on main branch, target all projects; otherwise, target affected for PRs)
+      - name: Build
+        if: steps.read-build-cache.outputs.cache-hit != 'true'
+        uses: mansagroup/nrwl-nx-action@v2
+        with:
+          targets: build
+          all: true
+          parallel: true
+
+  #################
+  # Step 2 : Test #
+  #################
+  unit-test:
+    name: Unit Tests on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    needs: [build]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-12]
+    steps:
+      # Checkout source files
+      - name: Checkout Source Files
+        uses: actions/checkout@v2
+
+      # Setup environment
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+
+      - name: Read Build Cache
+        id: read-build-cache
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          path: |
+            **/dist
+            **/.env
+            **/generated
+
+      - name: Check Build Cache
+        if: steps.read-build-cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Could not read from Build Cache!"
+          echo "Check the Build to see if there were issues saving the cache!"
+          exit 1
+
+      # Install dependencies and test
+      - name: Install Dependencies
+        run: |
+          yarn install --frozen-lockfile
+          yarn link
+          yarn prisma:generate
+
+      - name: Unit Test
+        uses: mansagroup/nrwl-nx-action@v2
+        with:
+          targets: unit
+          all: true
+          parallel: true
+
+  integration-test:
+    name: Integration Tests
+    runs-on: ${{ matrix.os }}
+    needs: [build]
+    strategy:
+      matrix:
+        # Can't do Mac, see https://github.com/orgs/community/discussions/25777#discussioncomment-3249229
+        # Can't do Windows, see https://github.com/actions/runner/issues/904#issuecomment-760484077
+        os: [ubuntu-latest]
+    services:
+      postgres:
+        image: postgres:15.0
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+    steps:
+      # Checkout source files
+      - name: Checkout Source Files
+        uses: actions/checkout@v2
+
+      # Setup environment
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+
+      - name: Read Build Cache
+        id: read-build-cache
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          path: |
+            **/dist
+            **/.env
+            **/generated
+
+      - name: Check Build Cache
+        if: steps.read-build-cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Could not read from Build Cache!"
+          echo "Check the Build to see if there were issues saving the cache!"
+          exit 1
+
+      # Install dependencies and test
+      - name: Install Dependencies
+        run: |
+          yarn install --frozen-lockfile
+          yarn link
+          yarn prisma:migrate:up
+          yarn prisma:generate
+
+      - name: Integration Test
+        uses: mansagroup/nrwl-nx-action@v2
+        with:
+          targets: integration
+          all: true
+          parallel: true
+
+  env-up-test:
+    name: Env Spin-up Test on ${{ matrix.data.os }}
+    runs-on: ${{ matrix.data.os }}
+    needs: [build]
+    strategy:
+      matrix:
+        # Can't do Mac, see https://github.com/orgs/community/discussions/25777#discussioncomment-3249229
+        data: [{ os: ubuntu-latest, cmd: 'env:up' }, { os: windows-latest, cmd: 'env:windows:up' }]
+    steps:
+      # Checkout source files
+      - name: Checkout Source Files
+        uses: actions/checkout@v2
+
+      # Setup environment
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+
+      - name: Read Build Cache
+        id: read-build-cache
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          path: |
+            **/dist
+            **/.env
+            **/generated
+
+      - name: Check Build Cache
+        if: steps.read-build-cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Could not read from Build Cache!"
+          echo "Check the Build to see if there were issues saving the cache!"
+          exit 1
+
+      # Install dependencies and test
+      - name: Install Dependencies
+        run: |
+          yarn install --frozen-lockfile
+          yarn link
+          yarn prisma:generate
+
+      - name: Install Dependencies
+        shell: bash
+        run: |
+          yarn ${{ matrix.data.cmd }}
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      # Checkout source files
+      - name: Checkout Source Files
+        uses: actions/checkout@v2
+
+      # Setup Node and NPM
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+
+      - name: Read Build Cache
+        id: read-build-cache
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          path: |
+            **/dist
+            **/.env
+            **/generated
+
+      - name: Check Build Cache
+        if: steps.read-build-cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Could not read from Build Cache!"
+          echo "Check the Build to see if there were issues saving the cache!"
+          exit 1
+
+      # Install dependencies and lint
+      - name: Install Dependencies
+        run: |
+          yarn install --frozen-lockfile
+          yarn link
+          yarn prisma:generate
+
+      - name: Lint
+        uses: mansagroup/nrwl-nx-action@v2
+        with:
+          targets: lint
+          all: true
+          parallel: true

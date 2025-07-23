@@ -1,0 +1,104 @@
+{
+  "products": [
+    {
+      "id": "1e2d3c4b-5a6f-7e8d-9c0b-1a2d3e4f5b6c",
+      "created_at": "2024-06-01T10:00:00Z",
+      "name": "Wireless Mouse",
+      "price": 29.99
+    },
+    {
+      "id": "2f3e4d5c-6b7a-8c9d-0e1f-2b3c4d5e6f7a",
+      "created_at": "2024-06-01T10:05:00Z",
+      "name": "Mechanical Keyboard",
+      "price": 89.99
+    },
+    {
+      "id": "3a4b5c6d-7e8f-9a0b-1c2d-3e4f5a6b7c8d",
+      "created_at": "2024-06-01T10:10:00Z",
+      "name": "HD Monitor",
+      "price": 199.99
+    },
+    {
+      "id": "4b5c6d7e-8f9a-0b1c-2d3e-4f5a6b7c8d9e",
+      "created_at": "2024-06-01T10:15:00Z",
+      "name": "USB-C Hub",
+      "price": 49.99
+    },
+    {
+      "id": "5c6d7e8f-9a0b-1c2d-3e4f-5a6b7c8d9e0f",
+      "created_at": "2024-06-01T10:20:00Z",
+      "name": "Bluetooth Speaker",
+      "price": 59.99
+    },
+    {
+      "id": "6d7e8f9a-0b1c-2d3e-4f5a-6b7c8d9e0f1a",
+      "created_at": "2024-06-01T10:25:00Z",
+      "name": "Webcam 1080p",
+      "price": 39.99
+    },
+    {
+      "id": "7e8f9a0b-1c2d-3e4f-5a6b-7c8d9e0f1a2b",
+      "created_at": "2024-06-01T10:30:00Z",
+      "name": "Laptop Stand",
+      "price": 34.99
+    },
+    {
+      "id": "8f9a0b1c-2d3e-4f5a-6b7c-8d9e0f1a2b3c",
+      "created_at": "2024-06-01T10:35:00Z",
+      "name": "Noise Cancelling Headphones",
+      "price": 129.99
+    },
+    {
+      "id": "9a0b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d",
+      "created_at": "2024-06-01T10:40:00Z",
+      "name": "Portable SSD 1TB",
+      "price": 149.99
+    },
+    {
+      "id": "0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
+      "created_at": "2024-06-01T10:45:00Z",
+      "name": "Smartphone Charger",
+      "price": 19.99
+    }
+  ],
+  "coupons": [
+    {
+      "id": "1e2d3c4b-5a6f-7e8d-9c0b-1a2d3e4f5b6c",
+      "created_at": "2024-06-01T10:00:00Z",
+      "code": "PERCENTAGE_10_OFF_CART",
+      "discount": 10,
+      "type": "PERCENTAGE",
+      "level": "CART",
+      "is_active": true
+    },
+    {
+      "id": "2e3d4c5b-6a7f-8e9a-0b1c-2d3e4f5a6b7c",
+      "created_at": "2024-06-01T10:00:00Z",
+      "code": "FIXED_10_OFF_CART",
+      "discount": 10,
+      "type": "FIXED",
+      "level": "CART",
+      "is_active": true
+    },
+    {
+      "id": "3f4e5d6c-7b8a-9e0f-1a2b-3c4d5e6f7a8b",
+      "created_at": "2024-06-01T10:00:00Z",
+      "code": "FIXED_10_OFF_PRODUCT",
+      "discount": 10,
+      "type": "FIXED",
+      "level": "PRODUCT",
+      "product_id": "0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
+      "is_active": true
+    },
+    {
+      "id": "4e5d6c7b-8a9e-0f1a-2b3c-4d5e6f7a8b9c",
+      "created_at": "2024-06-01T10:00:00Z",
+      "code": "PERCENTAGE_10_OFF_PRODUCT",
+      "discount": 10,
+      "type": "PERCENTAGE",
+      "level": "PRODUCT",
+      "product_id": "0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
+      "is_active": true
+    }
+  ]
+}

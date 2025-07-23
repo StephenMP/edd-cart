@@ -1,0 +1,71 @@
+datasource db {
+  url      = env("DATABASE_URL")
+  provider = "postgres"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Products
+model Product {
+  id         String        @id @default(uuid())
+  created_at DateTime      @default(now())
+  name       String
+  price      Float
+  cartItems  CartProduct[]
+  coupons    Coupon[]
+
+  @@index([created_at])
+}
+
+// Coupons
+enum CouponType {
+  PERCENTAGE
+  FIXED
+}
+
+enum CouponLevel {
+  PRODUCT
+  CART
+}
+
+model Coupon {
+  id         String      @id @default(uuid())
+  created_at DateTime    @default(now())
+  code       String
+  discount   Float
+  type       CouponType
+  level      CouponLevel
+  cart       Cart?       @relation(fields: [cart_id], references: [id])
+  cart_id    String?     @unique
+  is_active  Boolean     @default(true)
+  product    Product?    @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  product_id String?
+
+  @@index([code, created_at, is_active])
+}
+
+// Cart
+model CartProduct {
+  id         String   @id @default(uuid())
+  cart       Cart     @relation(fields: [cart_id], references: [id])
+  cart_id    String
+  product    Product  @relation(fields: [product_id], references: [id])
+  product_id String
+  quantity   Int      @default(1)
+  created_at DateTime @default(now())
+
+  @@unique([cart_id, product_id])
+}
+
+model Cart {
+  id            String        @id @default(uuid())
+  created_at    DateTime      @default(now())
+  cart_products CartProduct[]
+  coupon        Coupon?
+  sub_total     Float         @default(0)
+  total         Float         @default(0)
+
+  @@index([created_at])
+}

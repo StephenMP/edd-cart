@@ -1,0 +1,65 @@
+{
+  "name": "processor",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/processor/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/processor",
+        "main": "apps/processor/src/main.ts",
+        "tsConfig": "apps/processor/tsconfig.app.json"
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": []
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/js:node",
+      "options": {
+        "inspect": false,
+        "buildTarget": "processor:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "processor:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/processor/**/*.ts"]
+      }
+    },
+    "unit": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/processor/jest.config.ts",
+        "passWithNoTests": true,
+        "testPathPattern": ["^((?!it).)*.ts$"]
+      }
+    },
+    "integration": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/processor/jest.config.ts",
+        "passWithNoTests": true,
+        "testPathPattern": [".*.it.spec.ts"]
+      }
+    }
+  },
+  "tags": []
+}
