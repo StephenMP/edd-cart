@@ -67,7 +67,7 @@ For specific versions of each of the following technologies if not listed here, 
 1. Make sure you have [yarn v1](https://classic.yarnpkg.com/lang/en/) installed (`npm i -g yarn` - you can use npm, but all the commands I give in this README are yarn)
 1. Open a terminal window to the project root
 1. Run `yarn` or `yarn install`
-  1. **NOTE**: Unfortunately, this project is using an older version of Nx which relied on `stylus` and that package was found to have malicious code and was removed and replaced with a security version. So when you install, you'll have to select the 0.0.1-security version of 'stylus' when prompted if using `yarn`. `npm` seems to resolve this auto-magically.
+   1. **NOTE**: Unfortunately, this project is using an older version of Nx which relied on `stylus` and that package was found to have malicious code and was removed and replaced with a security version. So when you install, you'll have to select the 0.0.1-security version of 'stylus' when prompted if using `yarn`. `npm` seems to resolve this auto-magically.
 1. Run `yarn all:build` to make sure everything builds
 1. Run `yarn env:up`
    1. You may need to give the start script execution permissions (`chmod +x ./tools/scripts/start.sh`)
@@ -105,10 +105,10 @@ To run the code together:
 
 1. Open a second terminal window so you don't bother your environment
 1. Run `yarn serve:all` to spin up both apps
-  1. You'll see some Kafka whining as it spins up and connects. Just wait until all text stops and you see that final
-  ```
-  [Nest] 36155  - 07/23/2025, 3:32:39 AM     LOG 🚀 Processor consumer is running
-  ```
+   1. You'll see some Kafka whining as it spins up and connects. Just wait until all text stops and you see that final
+   ```
+   [Nest] 36155  - 07/23/2025, 3:32:39 AM     LOG 🚀 Processor consumer is running
+   ```
 
 1. Once everything is spun up, navigate to <http://localhost:3333> where you will be greeted with a Swagger page documenting the API.
    - You can use this page to query the API or the classic postman, Thunder Client, Insomnia, or good ol' cURL approaches
