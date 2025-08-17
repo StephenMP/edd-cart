@@ -1,6 +1,4 @@
-# Stephen Porter - Staff Engineer
-
-## Event-driven Cart
+# Event-driven Cart
 
 ---
 
@@ -8,27 +6,13 @@
 
 ---
 
-- [Before We Begin](#before-we-begin)
 - [Main Tech Stack](#main-tech-stack)
 - [Getting Started](#getting-started)
   1. [Running the Local Env](#step-1-running-the-local-environment)
   1. [Running the Code](#step-2-running-the-code)
 - [Testing](#testing)
-- [Extra Things I Did](#extra-things-i-did)
 
 ---
-
-### Before We Begin
-
----
-
-I wasn't quite happy with where things left off after the coding exercise and had to reflect a bit on it. Part of the issue is you spend quite some time building large applications, you often get stuck in the "overthinking" mindset when it comes to doing smaller, more trivial things... especially when being tested. Just the habit of thinking on the larger, production scale.
-
-Anyhow, I wanted to throw together a quick example of how I would approach a cart implementation beyond a one file, simplistic example. As, let's be honest, a cart system is a bit more complex than that. In fact, I'd argue a cart warrants it's own contextual boundary and domain within a microservices architecture.
-
-Fundamentally, it's the end result of a series of events that a user takes (add to cart, remove from cart, update quantity, etc.). By playing the actions in order, you get a final materialized view which represents the state of your cart. What a perfect Event-driven candidate!
-
-So, what I wrote here is a very quickly slapped together example of what something like that may look like. Now, I fully acknowledge that there are uncovered edge cases and some ugly stuff to clean up, but this should give a pretty decent gist.
 
 ---
 
